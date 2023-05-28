@@ -1,11 +1,11 @@
-NAME = btc
+NAME = RPN
 CXX = c++
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -pedantic -g
 RM = rm
 RMFLAGS = -f
 
-SRCS = main.cpp
-
+SRCS = main.cpp RPN.cpp
+ 
 OBJS = $(SRCS:.cpp=.o)
 
 $(NAME): $(OBJS)
