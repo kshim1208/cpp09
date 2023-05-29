@@ -6,10 +6,10 @@
 class Date
 {
 	private:
-		std::string	date;
-		int			year;
-		int			month;
-		int			day;
+		std::string	date_;
+		int			year_;
+		int			month_;
+		int			day_;
 		
 	public:
 		Date(/* args*/);

@@ -75,6 +75,11 @@ void	BitcoinExchange::setDatabase(std::string& str, size_t pos)
 	{
 		throw std::exception();
 	}
+
+	// 밑에 두 값 입력 방식은 둘 다 내부적으로 pair를 사용한다.
+	// 내부적으로 overwrite 여부가 다르다는 말을 얼핏 들었는데 진위 여부 확인 필요하다.
+
 	this->database_.insert(std::make_pair(tmp_date, value));
+	// this->database_[tmp_date] = value;
 }
 
