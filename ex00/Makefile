@@ -4,7 +4,7 @@ CXXFLAGS = -Wall -Werror -Wextra -std=c++98
 RM = rm
 RMFLAGS = -f
 
-SRCS = main.cpp
+SRCS = main.cpp BitcoinExchange.cpp Date.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

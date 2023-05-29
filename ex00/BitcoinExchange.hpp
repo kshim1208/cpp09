@@ -5,12 +5,13 @@
 
 # include <map>
 # include <fstream>
+# include <string>
 
 // key 관련 클래스를 nested class로 쓸까?
 	// 아니면 key를 정수형으로 다룰까?
 	// class 타입 key가 존재할 수 있을까?
 
-typedef	std::map<Date, int> btcDatabase;
+typedef	std::map<Date, float> btcDatabase;
 
 class BitcoinExchange
 {
@@ -23,6 +24,7 @@ class BitcoinExchange
 		BitcoinExchange& operator=(const BitcoinExchange& source);
 
 		void openMarket(std::fstream& data_strm);
+		void setDatabase(std::string& date, size_t pos);
 };
 
 #endif

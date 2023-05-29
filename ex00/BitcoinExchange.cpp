@@ -1,10 +1,12 @@
 #include "BitcoinExchange.hpp"
+#include "Date.hpp"
 
 #include <map>
 #include <fstream>
 #include <utility>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 BitcoinExchange::BitcoinExchange(/* args*/){}
 
@@ -14,48 +16,65 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange& source){}
 
 BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& source){}
 
-// stringstream, fail eof로 예외 처리해보기.
-
 void	BitcoinExchange::openMarket(std::fstream& data_strm)
 {
 	std::string				tmp_str;
-	std::stringstream		tmp_str_strm;
 	size_t					pos;
 
-	// 한 줄을 읽는다.
 	std::getline(data_strm, tmp_str);
 	pos = tmp_str.find(',');
+	if (pos == std::string::npos)
+	{
+		// ,이 없어서 fail
+	}
 	if (tmp_str.substr(0, pos) != "date")
 	{
-		
+		// fail
 	}
-	if (tmp_str.substr(pos, tmp_str.size()) != "exchange_rate")
+	if (tmp_str.substr(pos + 1, tmp_str.size()) != "exchange_rate")
 	{
-
+		// fail
 	}
-
-	// 다음 줄을 읽는다 (자료 시작)
-		// eof는 data를 본다. getline 실패하면 어디에 failbit 켜질까?
-
-	while (!data_strm.eof())
+	while (data_strm.eof() == false)
 	{
-		if (data_strm.fail() == true)
+		try
 		{
-			return ;
+			if (data_strm.fail() == true)
+			{
+				// fail
+			}
+			std::getline(data_strm, tmp_str);
+			pos = tmp_str.find(',');
+			if (pos == std::string::npos)
+			{
+				// ,이 없어서 fail
+			}
+			this->setDatabase(tmp_str, pos);
 		}
-		std::getline(data_strm, tmp_str);
-		tmp_str_strm.str(tmp_str);
-		
-		// 3개로 쪼개기
-
-		this->database_.insert(std::make_pair(, ));
+		catch(const std::exception& e)
+		{
+		}
 	}
-	// 가장 앞 숫자열을 년도 단위가 되도록 읽어낸다.
-
-	// 날짜 범위는 어떻게 잡을까? 제한이 있나? -> 데이터 베이스의 날짜가 int 범위를 초과하진 않음.
-
-	// 날짜 parsing하고 나면 이에 해당하는 key 값을 float 읽기로 저장한다.
-
   
 	return ;
 }
+
+void	BitcoinExchange::setDatabase(std::string& str, size_t pos)
+{
+	Date			tmp_date;
+	std::string		tmp_str;
+	std::stringstream tmp_stream;
+	float			value;
+
+	tmp_str = str.substr(0, pos);
+	tmp_date.setDate(tmp_str);
+
+	tmp_stream << str.substr(pos + 1, tmp_str.size());
+	tmp_stream >> value;
+	if (tmp_stream.fail() == true || tmp_stream.eof() == false)
+	{
+		throw std::exception();
+	}
+	this->database_.insert(std::make_pair(tmp_date, value));
+}
+

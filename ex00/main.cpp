@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	if (data_strm.is_open() == false)
 	{
 		// exception throw할지 검토
-		return ;
+		return (1);
 	}
 	market.openMarket(data_strm);
 	// arg 2개

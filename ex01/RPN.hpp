@@ -23,7 +23,7 @@ class RPN
 		RPN(const RPN& source);
 		RPN& operator=(const RPN& source);
 		void	isExpressions(char *str);
-		void	calcExpressions(char aris_sym);
+		void	calcExpressions(std::string& aris_sym);
 		unsigned int	getExprsSize();
 		int		getExprsTop();
 };

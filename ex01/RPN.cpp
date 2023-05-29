@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <cstdlib>
 
 const char*	RPN::RPNExpressionError::what() const throw()
 {
@@ -30,38 +31,40 @@ RPN& RPN::operator=(const RPN& source)
 void	RPN::isExpressions(char *str)
 {
 	std::stringstream	sstream(str);
-	int			num = -1;
-	char		aris_sym;
+	std::string			tmp;
 
 	// eof로 반복분 돌리면 안좋은 이유?
 	while (sstream.eof() == false)
 	{
-		sstream >> num;
-		// 문자 들어오면 fail은 무조건 뜨는데, 읽었던 걸 되돌릴 수는 없나?
-		if (sstream.fail() == true && sstream.eof() == false)
+		sstream >> tmp;
+		if (tmp.size() != 1)
 		{
-			sstream >> aris_sym;
-			if (sstream.fail() == true || sstream.eof() == false)
-			{
-				throw RPN::RPNExpressionError();
-			}
-			this->calcExpressions(aris_sym);
-			return ;
-		}
-		if (num > 9 || num < 0)
 			throw RPN::RPNExpressionError();
-		exprs_.push(num);
+		}
+		if (tmp.compare("+") == 0 || tmp.compare("-") == 0
+			|| tmp.compare("-") == 0 || tmp.compare("/") == 0)
+		{
+			this->calcExpressions(tmp);
+		}
+		else if (tmp.front() >= '0' && tmp.front() <= '9')
+		{
+			exprs_.push(std::atoi(tmp.c_str()));
+		}
+		else
+		{
+			throw RPN::RPNExpressionError();
+		}
 	}
 	return ;
 }
 
 
-void	RPN::calcExpressions(char aris_sym)
+void	RPN::calcExpressions(std::string& aris_sym)
 {
 	int	a;
 	int	b;
 
-	if (aris_sym == '+')
+	if (aris_sym.compare("+") == 0)
 	{
 		if (exprs_.size() == 0)
 			throw RPN::RPNExpressionError();
@@ -73,7 +76,7 @@ void	RPN::calcExpressions(char aris_sym)
 		exprs_.pop();
 		exprs_.push(a + b);
 	}
-	else if (aris_sym == '-')
+	else if (aris_sym.compare("-") == 0)
 	{
 		if (exprs_.size() == 0)
 			throw RPN::RPNExpressionError();
@@ -85,7 +88,7 @@ void	RPN::calcExpressions(char aris_sym)
 		exprs_.pop();
 		exprs_.push(a - b);
 	}
-	else if (aris_sym == '*')
+	else if (aris_sym.compare("*") == 0)
 	{
 		if (exprs_.size() == 0)
 			throw RPN::RPNExpressionError();
@@ -97,7 +100,7 @@ void	RPN::calcExpressions(char aris_sym)
 		exprs_.pop();
 		exprs_.push(a * b);
 	}
-	else if (aris_sym == '/')
+	else if (aris_sym.compare("/") == 0)
 	{
 		if (exprs_.size() == 0)
 			throw RPN::RPNExpressionError();
@@ -110,10 +113,6 @@ void	RPN::calcExpressions(char aris_sym)
 		a = exprs_.top();
 		exprs_.pop();
 		exprs_.push(a / b);
-	}
-	else
-	{
-		throw RPN::RPNExpressionError();
 	}
 }
 

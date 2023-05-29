@@ -16,6 +16,7 @@ class Date
 		~Date();
 		Date(const Date& source);
 		Date& operator=(const Date& source);
+		void	setDate(std::string &str);
 };
 
 #endif
