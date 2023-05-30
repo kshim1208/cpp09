@@ -42,10 +42,6 @@ class BitcoinExchange
 		class badInput : public std::exception
 		{
 			public:
-				std::string	string;
-
-				badInput();
-				badInput(std::string str);
 				const char* what() const throw ();
 		};
 
