@@ -39,7 +39,7 @@ const char*	BitcoinExchange::tooLargeNumber::what() const throw ()
 	return ("Error: too large a number.");
 }
 
-BitcoinExchange::badInput(std::string& str): nowLine_(str);
+BitcoinExchange::badInput::badInput(std::string& str): nowLine_(str){};
 
 const char*	BitcoinExchange::badInput::what() const throw ()
 {
@@ -107,13 +107,13 @@ void	BitcoinExchange::setDatabase(std::string& str, size_t pos)
 
 	tmp_str = str.substr(0, pos);
 	if (tmp_date.setDate(tmp_str) == false)
-		throw BitcoinExchange::badInput();
+		throw BitcoinExchange::badInput(str);
 
 	tmp_stream << str.substr(pos + 1, str.size() - pos - 1);
 	tmp_stream >> value;
 	if (tmp_stream.fail() == true || tmp_stream.eof() == false)
 	{
-		throw BitcoinExchange::badInput();
+		throw BitcoinExchange::badInput(str);
 	}
 
 	// 밑에 두 값 입력 방식은 둘 다 내부적으로 pair를 사용한다.
@@ -184,7 +184,7 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	tmp_str = str.substr(0, pos - 1);
 	tmp_date.setDate(tmp_str);
 	if (tmp_date.setDate(tmp_str) == false)
-		throw BitcoinExchange::badInput();
+		throw BitcoinExchange::badInput(str);
 	iter = this->database_.upper_bound(tmp_date);
 	if (iter == this->database_.end())
 	{
@@ -199,7 +199,7 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	tmp_stream >> value;
 	if (tmp_stream.fail() == true || tmp_stream.eof() == false)
 	{
-		throw BitcoinExchange::badInput();
+		throw BitcoinExchange::badInput(str);
 	}
 	if (value <= 0)
 	{

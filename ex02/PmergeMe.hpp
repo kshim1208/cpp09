@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-template< template <class ELEM, class std::allocator<ELEM> > class T>
+template< template <class ELEM, class Allocator > class T>
 class PmergeMe
 {
 	private:

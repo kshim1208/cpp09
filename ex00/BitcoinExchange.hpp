@@ -55,7 +55,7 @@ class BitcoinExchange
 		void setDatabase(std::string& date, size_t pos);
 		void calcInput(std::fstream& input);
 		void checkInputLine(std::string& str, size_t pos);
-		std::string& BitcoinExchange::getnowLine();
+		std::string& getnowLine();
 };
 
 #endif

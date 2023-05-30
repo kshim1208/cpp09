@@ -6,7 +6,8 @@
 
 int	main(int argc, char **argv)
 {
-	PmergeMe	merger;
+	PmergeMe<std::vector>	merger_vec;
+	PmergeMe<std::list>		merger_list;
 
 	if (argc != 2)
 		return (1);
