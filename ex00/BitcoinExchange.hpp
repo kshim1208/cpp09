@@ -6,6 +6,7 @@
 # include <map>
 # include <fstream>
 # include <string>
+# include <exception>
 
 // key 관련 클래스를 nested class로 쓸까?
 	// 아니면 key를 정수형으로 다룰까?
@@ -23,8 +24,36 @@ class BitcoinExchange
 		BitcoinExchange(const BitcoinExchange& source);
 		BitcoinExchange& operator=(const BitcoinExchange& source);
 
-		void openMarket(std::fstream& data_strm);
+		class couldntOpenFile : public std::exception
+		{
+			public:
+				const char* what() const throw ();
+		};
+		class notPositiveValue : public std::exception
+		{
+			public:
+				const char* what() const throw ();
+		};
+		class tooLargeNumber : public std::exception
+		{
+			public:
+				const char* what() const throw ();
+		};
+		class badInput : public std::exception
+		{
+			public:
+				std::string	string;
+
+				badInput();
+				badInput(std::string str);
+				const char* what() const throw ();
+		};
+
+
+		void openMarket(void);
 		void setDatabase(std::string& date, size_t pos);
+		void calcInput(std::fstream& input);
+		void checkInputLine(std::string& str, size_t pos);
 };
 
 #endif
