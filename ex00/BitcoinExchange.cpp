@@ -39,8 +39,11 @@ const char*	BitcoinExchange::tooLargeNumber::what() const throw ()
 	return ("Error: too large a number.");
 }
 
+BitcoinExchange::badInput(std::string& str): nowLine_(str);
+
 const char*	BitcoinExchange::badInput::what() const throw ()
 {
+	std::string appending = "Error: bad input => " + this->nowLine_;
 	return ("Error: bad input => ");
 }
 
@@ -103,7 +106,8 @@ void	BitcoinExchange::setDatabase(std::string& str, size_t pos)
 	float			value;
 
 	tmp_str = str.substr(0, pos);
-	tmp_date.setDate(tmp_str);
+	if (tmp_date.setDate(tmp_str) == false)
+		throw BitcoinExchange::badInput();
 
 	tmp_stream << str.substr(pos + 1, str.size() - pos - 1);
 	tmp_stream >> value;
@@ -147,6 +151,7 @@ void	BitcoinExchange::calcInput(std::fstream& input)
 				// fail
 			}
 			std::getline(input, tmp_str);
+			this->nowline_ = tmp_str;
 			pos = tmp_str.find('|');
 			if (pos == std::string::npos)
 			{
@@ -178,6 +183,8 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 
 	tmp_str = str.substr(0, pos - 1);
 	tmp_date.setDate(tmp_str);
+	if (tmp_date.setDate(tmp_str) == false)
+		throw BitcoinExchange::badInput();
 	iter = this->database_.upper_bound(tmp_date);
 	if (iter == this->database_.end())
 	{
@@ -206,3 +213,7 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	std::cout << tmp_str << " => " << value << " = " << mult << std::endl;
 }
 
+std::string& BitcoinExchange::getnowLine()
+{
+	return (this->nowline_);
+}

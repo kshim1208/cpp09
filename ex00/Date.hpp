@@ -18,17 +18,11 @@ class Date
 		Date(const Date& source);
 		Date& operator=(const Date& source);
 
-		class badInput : public std::exception
-		{
-			public:
-				const char* what() const throw ();
-		};
-
 		bool	operator>(const Date& rhs) const;
 		bool	operator<(const Date& rhs) const;
 		bool	operator==(const Date& rhs) const;
 
-		void	setDate(std::string &str);
+		bool	setDate(std::string &str);
 		const std::string&	getDate(void) const;
 };
 

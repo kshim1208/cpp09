@@ -1,10 +1,14 @@
 #ifndef PmergeMe_HPP
 # define PmergeMe_HPP
 
+#include <vector>
+#include <list>
+
+template< template <class ELEM, class std::allocator<ELEM> > class T>
 class PmergeMe
 {
 	private:
-		/* data */
+		T<int>	cont;
 	public:
 		PmergeMe(/* args*/);
 		~PmergeMe();

@@ -18,6 +18,7 @@ class BitcoinExchange
 {
 	private:
 		btcDatabase	database_;
+		std::string	nowline_;
 	public:
 		BitcoinExchange(/* args*/);
 		~BitcoinExchange();
@@ -42,7 +43,11 @@ class BitcoinExchange
 		class badInput : public std::exception
 		{
 			public:
+				badInput(std::string& str);
 				const char* what() const throw ();
+
+			private:
+				std::string	nowLine_;
 		};
 
 
@@ -50,6 +55,7 @@ class BitcoinExchange
 		void setDatabase(std::string& date, size_t pos);
 		void calcInput(std::fstream& input);
 		void checkInputLine(std::string& str, size_t pos);
+		std::string& BitcoinExchange::getnowLine();
 };
 
 #endif
