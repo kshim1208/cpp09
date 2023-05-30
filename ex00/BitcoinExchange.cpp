@@ -39,13 +39,23 @@ const char*	BitcoinExchange::tooLargeNumber::what() const throw ()
 	return ("Error: too large a number.");
 }
 
-BitcoinExchange::badInput::badInput(std::string& str): nowLine_(str){};
+BitcoinExchange::badInput::badInput(std::string& str)
+{
+	std::string	tmp = "Error: bad input => " + str;
+	this->nowLine_ = new char[tmp.size()];
+	std::strcpy(this->nowLine_, tmp.c_str());
+}
+
+BitcoinExchange::badInput::~badInput() throw ()
+{
+	delete[] this->nowLine_;
+};
 
 const char*	BitcoinExchange::badInput::what() const throw ()
 {
-	std::string appending = "Error: bad input => " + this->nowLine_;
-	return ("Error: bad input => ");
+	return (this->nowLine_);
 }
+
 
 void	BitcoinExchange::openMarket(void)
 {
@@ -56,23 +66,21 @@ void	BitcoinExchange::openMarket(void)
 	data_strm.open("data.csv"/*, 읽기 위한 옵션 추가 */);
 	if (data_strm.is_open() == false)
 	{
-		// exception throw할지 검토
-		return ;
+		throw BitcoinExchange::couldntOpenFile();
 	}
 	std::getline(data_strm, tmp_str);
 	pos = tmp_str.find(',');
 	if (pos == std::string::npos)
 	{
-		// ,이 없어서 fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
-	// 여기서 stream 쓰면 data 앞 뒤로 띄어쓰기 걸러낼 수 있을 것 같음
 	if (tmp_str.substr(0, pos) != "date")
 	{
-		// fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
-	if (tmp_str.substr(pos + 1, tmp_str.size()) != "exchange_rate")
+	if (tmp_str.substr(pos + 1, tmp_str.size() - pos - 1) != "exchange_rate")
 	{
-		// fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
 	while (data_strm.eof() == false)
 	{
@@ -80,18 +88,22 @@ void	BitcoinExchange::openMarket(void)
 		{
 			if (data_strm.fail() == true)
 			{
-				// fail
+				break ;
+				// fail??? 어떤 경우?? 어떤 처리??
 			}
 			std::getline(data_strm, tmp_str);
+			if (data_strm.eof() == true)
+				break ;
 			pos = tmp_str.find(',');
 			if (pos == std::string::npos)
 			{
-				// ,이 없어서 fail
+				throw BitcoinExchange::badInput(tmp_str);
 			}
 			this->setDatabase(tmp_str, pos);
 		}
 		catch(const std::exception& e)
 		{
+			std::cerr << e.what() << "\n";
 		}
 	}
 	data_strm.close();
@@ -115,32 +127,27 @@ void	BitcoinExchange::setDatabase(std::string& str, size_t pos)
 	{
 		throw BitcoinExchange::badInput(str);
 	}
-
-	// 밑에 두 값 입력 방식은 둘 다 내부적으로 pair를 사용한다.
-		// pair, pair에서 사용하는 compare 규칙 설명
 	this->database_.insert(std::make_pair(tmp_date, value));
-	// this->database_[tmp_date] = value;
-	// printf("%s,%f\n", tmp_str.c_str(), value);
 }
 
 void	BitcoinExchange::calcInput(std::fstream& input)
 {
 	std::string			tmp_str;
 	size_t				pos;
-	// input 한 줄 넘기기
+
 	std::getline(input, tmp_str);
 	pos = tmp_str.find('|');
 	if (pos == std::string::npos)
 	{
-		// ,이 없어서 fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
 	if (tmp_str.substr(0, pos - 1) != "date")
 	{
-		// fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
 	if (tmp_str.substr(pos + 2, tmp_str.size() - pos - 2) != "value")
 	{
-		// fail
+		throw BitcoinExchange::badInput(tmp_str);
 	}
 	while (input.eof() == false)
 	{
@@ -148,28 +155,25 @@ void	BitcoinExchange::calcInput(std::fstream& input)
 		{
 			if (input.fail() == true)
 			{
-				// fail
+				break ;
 			}
 			std::getline(input, tmp_str);
+			// if (input.eof() == true)
+			// 	break ;
 			this->nowline_ = tmp_str;
 			pos = tmp_str.find('|');
 			if (pos == std::string::npos)
 			{
-				// ,이 없어서 fail
+				throw BitcoinExchange::badInput(tmp_str);
 			}
 			this->checkInputLine(tmp_str, pos);
 		}
 		catch(const std::exception& e)
 		{
-			std::cerr << e.what();
-			std::cerr << '\n';
+			std::cerr << e.what() << '\n';
 		}
 		
 	}
-	// input 한 줄 읽기
-		// 정상
-			// this->database_ 순회해서 맞는 날짜 선택한 뒤 곱 연산하는 함수
-		// 비정상 (try-catch)
 }
 
 void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)

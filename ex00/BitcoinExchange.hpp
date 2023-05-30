@@ -8,10 +8,6 @@
 # include <string>
 # include <exception>
 
-// key 관련 클래스를 nested class로 쓸까?
-	// 아니면 key를 정수형으로 다룰까?
-	// class 타입 key가 존재할 수 있을까?
-
 typedef	std::map<Date, float> btcDatabase;
 
 class BitcoinExchange
@@ -44,10 +40,11 @@ class BitcoinExchange
 		{
 			public:
 				badInput(std::string& str);
+				~badInput() throw ();
 				const char* what() const throw ();
 
 			private:
-				std::string	nowLine_;
+				char*	nowLine_;
 		};
 
 

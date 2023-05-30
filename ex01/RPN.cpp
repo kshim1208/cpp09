@@ -42,7 +42,7 @@ void	RPN::isExpressions(char *str)
 			throw RPN::RPNExpressionError();
 		}
 		if (tmp.compare("+") == 0 || tmp.compare("-") == 0
-			|| tmp.compare("-") == 0 || tmp.compare("/") == 0)
+			|| tmp.compare("*") == 0 || tmp.compare("/") == 0)
 		{
 			this->calcExpressions(tmp);
 		}

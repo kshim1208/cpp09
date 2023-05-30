@@ -19,7 +19,6 @@ int	main(int argc, char **argv)
 		std::cerr << e.what() << '\n';
 		return (1);
 	}
-	// 스택 크기 1 아니어도 에러 throw?
 	if (calculator.getExprsSize() == 1)
 		std::cout << calculator.getExprsTop() << std::endl;
 	else
