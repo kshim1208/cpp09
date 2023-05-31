@@ -86,5 +86,42 @@ void	PmergeMe<CONT>::parseInput(char **argv)
 		iter++;
 	}
 }
+template<template<typename, typename> class CONT> 
+void	PmergeMe<CONT>::PmergeIt()
+{
+	// 호출할 때마다 새로운 컨테이너를 만들어줄까?
+	// 아니면 element를 조작할까?
+	// conatiner를 사용하여 정렬한다고 할 때, 어떤 접근이 더 나을까?
+	// 아마도 iterator를 넘겨주면서 해당 iterator 간 값을 바꾸는게 나을 듯.
+
+	// 일정 개수 단위까지 잘라냄
+		// MergeSplit, MergeSplit
+	// 일정 개수가 되면 삽입 정렬로 정렬함
+		// MergeInsert
+	// 합치는 과정에서 정렬함
+		// MergeSort
+}
+
+// https://stackoverflow.com/questions/2152986/how-do-i-get-the-index-of-an-iterator-of-an-stdvector
+// template화하여 공통적으로 사용하면서 작동 시간도 줄이고 싶다.
+// 어쩌면 [index] 오버로딩이 더 연산량 많을 수도 있다. 적당히 알아보고 선택하기.
+// +++ 어차피 std library 알고리즘을 따로 사용하지 않을 것을 권장하고 있음. 그냥 int index로 사용해보자.
+template<template<typename, typename> class CONT> 
+void	PmergeMe<CONT>::mergeSplit(int start, int end)
+{
+
+}
+
+template<template<typename, typename> class CONT> 
+void	PmergeMe<CONT>::mergeInsert(int start, int end)
+{
+
+}
+
+template<template<typename, typename> class CONT> 
+void	PmergeMe<CONT>::mergeSort(int start, int end)
+{
+	
+}
 
 #endif

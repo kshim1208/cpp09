@@ -9,6 +9,8 @@
 template<template<typename, typename> class CONT> 
 class PmergeMe
 {
+	typedef	CONT<int>::iterator	Piterator;
+
 	private:
 		CONT<int, std::allocator<int> >	cont_;
 	public:
@@ -31,6 +33,10 @@ class PmergeMe
 
 		void	parseInput(char **argv);
 		void	PmergeIt();
+		void	mergeSplit(int start, int end);
+		void	mergeInsert(int start, int end);
+		void	mergeSort(int start, int end);
+
 };
 
 # include "PmergeMe.tpp"
