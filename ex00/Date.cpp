@@ -61,6 +61,11 @@ bool	Date::operator==(const Date& rhs) const
 	return (this->year_ == rhs.year_ && this->month_ == rhs.month_ && this->day_ == rhs.day_);
 }
 
+bool	Date::operator!=(const Date& rhs) const
+{
+	return (this->year_ != rhs.year_ || this->month_ != rhs.month_ || this->day_ != rhs.day_);
+}
+
 bool	Date::setDate(std::string &str)
 {
 	std::stringstream	tmp_stream;

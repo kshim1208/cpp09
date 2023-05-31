@@ -39,23 +39,6 @@ const char*	BitcoinExchange::tooLargeNumber::what() const throw ()
 	return ("Error: too large a number.");
 }
 
-// 현재 c type str 형태로 저장하고 있는 것을 (what이 c type str 사용함)
-// std::string을 동적할당해서 저장하고, 출력할 때만 c_str으로 출력하는 건 어떨까?
-
-// BitcoinExchange::badInput::badInput(std::string& str)
-// {
-// 	std::string	tmp = "Error: bad input => " + str;
-// 	this->nowLine_ = new char[tmp.size() + 1]();
-// 	std::strcpy(this->nowLine_, tmp.c_str());
-// }
-
-// BitcoinExchange::badInput::badInput(const std::string& str)
-// {
-// 	std::string	tmp = "Error: bad input => " + str;
-// 	this->nowLine_ = new char[tmp.size() + 1]();
-// 	std::strcpy(this->nowLine_, tmp.c_str());
-// }
-
 BitcoinExchange::badInput::badInput(std::string& str)
 {
 	std::string	tmp = "Error: bad input => \'" + str + "\'";
@@ -92,15 +75,9 @@ void	BitcoinExchange::openMarket(void)
 	}
 	std::getline(data_strm, tmp_str);
 	pos = tmp_str.find(',');
-	if (pos == std::string::npos)
-	{
-		throw BitcoinExchange::badInput(tmp_str);
-	}
-	if (tmp_str.substr(0, pos) != "date")
-	{
-		throw BitcoinExchange::badInput(tmp_str);
-	}
-	if (tmp_str.substr(pos + 1, tmp_str.size() - pos - 1) != "exchange_rate")
+	if (pos == std::string::npos
+		|| tmp_str.substr(0, pos) != "date"
+		|| tmp_str.substr(pos + 1, tmp_str.size() - pos - 1) != "exchange_rate")
 	{
 		throw BitcoinExchange::badInput(tmp_str);
 	}
@@ -157,15 +134,9 @@ void	BitcoinExchange::calcInput(std::fstream& input)
 
 	std::getline(input, tmp_str);
 	pos = tmp_str.find('|');
-	if (pos == std::string::npos)
-	{
-		throw BitcoinExchange::badInput(tmp_str);
-	}
-	if (tmp_str.substr(0, pos - 1) != "date")
-	{
-		throw BitcoinExchange::badInput(tmp_str);
-	}
-	if (tmp_str.substr(pos + 2, tmp_str.size() - pos - 2) != "value")
+	if (pos == std::string::npos
+		|| tmp_str.substr(0, pos - 1) != "date"
+		|| tmp_str.substr(pos + 2, tmp_str.size() - pos - 2) != "value")
 	{
 		throw BitcoinExchange::badInput(tmp_str);
 	}
@@ -180,7 +151,6 @@ void	BitcoinExchange::calcInput(std::fstream& input)
 			std::getline(input, tmp_str);
 			// if (input.eof() == true)
 			// 	break ;
-			this->nowline_ = tmp_str;
 			pos = tmp_str.find('|');
 			if (pos == std::string::npos)
 			{
@@ -209,19 +179,18 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	if (tmp_date.setDate(tmp_str) == false)
 		throw BitcoinExchange::badInput(str);
 	iter = this->database_.upper_bound(tmp_date);
-	if (iter == this->database_.end())
-	{
-		iter--;
-	}
-	else if (iter == this->database_.begin())
+	if (iter == this->database_.begin() && this->database_.begin()->first != tmp_date)
 	{
 		throw BitcoinExchange::badInput(tmp_date.getDate());
+	}
+	if (iter == this->database_.end() && this->database_.end()->first > tmp_date)
+	{
+		iter--;
 	}
 	else if (iter != this->database_.begin())
 	{
 		iter--;
 	}
-
 	tmp_stream << str.substr(pos + 2, str.size() - pos - 2);
 	tmp_stream >> value;
 	if (tmp_stream.fail() == true || tmp_stream.eof() == false)
@@ -238,9 +207,4 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	}
 	mult = value * iter->second;
 	std::cout << tmp_str << " => " << value << " = " << mult << std::endl;
-}
-
-std::string& BitcoinExchange::getnowLine()
-{
-	return (this->nowline_);
 }

@@ -14,7 +14,6 @@ class BitcoinExchange
 {
 	private:
 		btcDatabase	database_;
-		std::string	nowline_;
 	public:
 		BitcoinExchange(/* args*/);
 		~BitcoinExchange();
@@ -47,19 +46,6 @@ class BitcoinExchange
 			private:
 				std::string*	nowLine_;
 		};
-
-		// class badInput : public std::exception
-		// {
-		// 	public:
-		// 		badInput(std::string& str);
-		// 		badInput(const std::string& str);
-		// 		~badInput() throw ();
-		// 		const char* what() const throw ();
-
-		// 	private:
-		// 		char*	nowLine_;
-		// };
-
 
 		void openMarket(void);
 		void setDatabase(std::string& date, size_t pos);

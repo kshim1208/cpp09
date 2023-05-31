@@ -21,6 +21,7 @@ class Date
 		bool	operator>(const Date& rhs) const;
 		bool	operator<(const Date& rhs) const;
 		bool	operator==(const Date& rhs) const;
+		bool	operator!=(const Date& rhs) const;
 
 		bool	setDate(std::string &str);
 		const std::string&	getDate(void) const;
