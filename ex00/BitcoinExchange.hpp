@@ -40,12 +40,25 @@ class BitcoinExchange
 		{
 			public:
 				badInput(std::string& str);
+				badInput(const std::string& str);
 				~badInput() throw ();
 				const char* what() const throw ();
 
 			private:
-				char*	nowLine_;
+				std::string*	nowLine_;
 		};
+
+		// class badInput : public std::exception
+		// {
+		// 	public:
+		// 		badInput(std::string& str);
+		// 		badInput(const std::string& str);
+		// 		~badInput() throw ();
+		// 		const char* what() const throw ();
+
+		// 	private:
+		// 		char*	nowLine_;
+		// };
 
 
 		void openMarket(void);

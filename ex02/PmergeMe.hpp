@@ -4,18 +4,20 @@
 #include <vector>
 #include <list>
 
-template< template <class ELEM, class Allocator > class T>
+template<typename CONT, typename ELEM>
 class PmergeMe
 {
 	private:
-		T<int>	cont;
+		CONT<ELEM>	cont_;
 	public:
 		PmergeMe(/* args*/);
 		~PmergeMe();
 		PmergeMe(const PmergeMe& source);
 		PmergeMe& operator=(const PmergeMe& source);
 
-		void	parseInput();
+		void	parseInput(char **argv);
 };
+
+# include "PmergeMe.tpp"
 
 #endif

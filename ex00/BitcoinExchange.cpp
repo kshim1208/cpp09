@@ -39,21 +39,43 @@ const char*	BitcoinExchange::tooLargeNumber::what() const throw ()
 	return ("Error: too large a number.");
 }
 
+// 현재 c type str 형태로 저장하고 있는 것을 (what이 c type str 사용함)
+// std::string을 동적할당해서 저장하고, 출력할 때만 c_str으로 출력하는 건 어떨까?
+
+// BitcoinExchange::badInput::badInput(std::string& str)
+// {
+// 	std::string	tmp = "Error: bad input => " + str;
+// 	this->nowLine_ = new char[tmp.size() + 1]();
+// 	std::strcpy(this->nowLine_, tmp.c_str());
+// }
+
+// BitcoinExchange::badInput::badInput(const std::string& str)
+// {
+// 	std::string	tmp = "Error: bad input => " + str;
+// 	this->nowLine_ = new char[tmp.size() + 1]();
+// 	std::strcpy(this->nowLine_, tmp.c_str());
+// }
+
 BitcoinExchange::badInput::badInput(std::string& str)
 {
-	std::string	tmp = "Error: bad input => " + str;
-	this->nowLine_ = new char[tmp.size()];
-	std::strcpy(this->nowLine_, tmp.c_str());
+	std::string	tmp = "Error: bad input => \'" + str + "\'";
+	this->nowLine_ = new std::string(tmp);
+}
+
+BitcoinExchange::badInput::badInput(const std::string& str)
+{
+	std::string	tmp = "Error: bad input => \'" + str + "\'";
+	this->nowLine_ = new std::string(tmp);
 }
 
 BitcoinExchange::badInput::~badInput() throw ()
 {
-	delete[] this->nowLine_;
+	delete this->nowLine_;
 };
 
 const char*	BitcoinExchange::badInput::what() const throw ()
 {
-	return (this->nowLine_);
+	return (this->nowLine_->c_str());
 }
 
 
@@ -63,7 +85,7 @@ void	BitcoinExchange::openMarket(void)
 	std::string				tmp_str;
 	size_t					pos;
 
-	data_strm.open("data.csv"/*, 읽기 위한 옵션 추가 */);
+	data_strm.open("data.csv");
 	if (data_strm.is_open() == false)
 	{
 		throw BitcoinExchange::couldntOpenFile();
@@ -92,8 +114,6 @@ void	BitcoinExchange::openMarket(void)
 				// fail??? 어떤 경우?? 어떤 처리??
 			}
 			std::getline(data_strm, tmp_str);
-			if (data_strm.eof() == true)
-				break ;
 			pos = tmp_str.find(',');
 			if (pos == std::string::npos)
 			{
@@ -186,15 +206,18 @@ void	BitcoinExchange::checkInputLine(std::string& str, size_t pos)
 	float					mult;
 
 	tmp_str = str.substr(0, pos - 1);
-	tmp_date.setDate(tmp_str);
 	if (tmp_date.setDate(tmp_str) == false)
 		throw BitcoinExchange::badInput(str);
 	iter = this->database_.upper_bound(tmp_date);
 	if (iter == this->database_.end())
 	{
-		throw std::exception();
+		iter--;
 	}
-	if (iter != this->database_.begin())
+	else if (iter == this->database_.begin())
+	{
+		throw BitcoinExchange::badInput(tmp_date.getDate());
+	}
+	else if (iter != this->database_.begin())
 	{
 		iter--;
 	}

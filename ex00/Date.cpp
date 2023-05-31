@@ -4,7 +4,12 @@
 #include <sstream>
 #include <tuple>
 
-Date::Date(/* args*/){}
+Date::Date(/* args*/)
+{
+	this->year_ = 0;
+	this->month_ = 0;
+	this->day_ = 0;
+}
 
 Date::~Date(){}
 

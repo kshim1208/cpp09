@@ -1,6 +1,6 @@
 NAME = btc
 CXX = c++
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g
 RM = rm
 RMFLAGS = -f
 

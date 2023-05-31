@@ -34,6 +34,7 @@ void	RPN::isExpressions(char *str)
 	std::string			tmp;
 
 	// eof로 반복분 돌리면 안좋은 이유?
+	// ./RPN "0 2  -", ./RPN "0 2  - "의 동작 상 차이 한 번 보기
 	while (sstream.eof() == false)
 	{
 		sstream >> tmp;
