@@ -33,9 +33,9 @@ class PmergeMe
 
 		void	parseInput(char **argv);
 		void	PmergeIt();
-		void	mergeSplit(Piterator first, Piterator last);
-		void	mergeInsert(Piterator first, Piterator last);
-		void	mergeSort(Piterator first, Piterator last);
+		// void	mergeSplit(Piterator first, Piterator last);
+		// void	mergeInsert(Piterator first, Piterator last);
+		// void	mergeSort(Piterator first, Piterator last);
 
 };
 

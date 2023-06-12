@@ -86,38 +86,51 @@ void	PmergeMe<CONT>::parseInput(char **argv)
 		iter++;
 	}
 }
+
 template<template<typename, typename> class CONT> 
 void	PmergeMe<CONT>::PmergeIt()
 {
-	// 호출할 때마다 새로운 컨테이너를 만들어줄까?
-	// 아니면 element를 조작할까?
-	// conatiner를 사용하여 정렬한다고 할 때, 어떤 접근이 더 나을까?
-	// 아마도 iterator를 넘겨주면서 해당 iterator 간 값을 바꾸는게 나을 듯.
+    int n = this->cont_.size();
+    int pairs = n / 2;
+    int oddpair = n % 2;
 
-	// 일정 개수 단위까지 잘라냄
-		// MergeSplit, MergeSplit
-	// 일정 개수가 되면 삽입 정렬로 정렬함
-		// MergeInsert
-	// 합치는 과정에서 정렬함
-		// MergeSort
+    for (int i = 0; i < pairs; ++i) {
+        if (this->cont_[2 * i] > this->cont_[2 * i + 1]) {
+            std::swap(this->cont_[2 * i], this->cont_[2 * i + 1]);
+        }
+    }
+
+    if (oddpair == 1) {
+        pairs++;
+    }
+
+    while (pairs > 1) {
+        int mergedpairs = pairs / 2;
+        for (int i = 0; i < mergedpairs; ++i) {
+            if (this->cont_[4 * i + 2] > this->cont_[4 * i + 3]) {
+                std::swap(this->cont_[4 * i + 2], this->cont_[4 * i + 3]);
+            }
+        }
+        pairs = mergedpairs;
+    }
 }
 
-template<template<typename, typename> class CONT> 
-void	PmergeMe<CONT>::mergeSplit(Piterator first, Piterator last)
-{
-	Piterator	middle;
-}
+// template<template<typename, typename> class CONT> 
+// void	PmergeMe<CONT>::mergeSplit(Piterator first, Piterator last)
+// {
+// 	Piterator	middle;
+// }
 
-template<template<typename, typename> class CONT> 
-void	PmergeMe<CONT>::mergeInsert(Piterator first, Piterator last)
-{
+// template<template<typename, typename> class CONT> 
+// void	PmergeMe<CONT>::mergeInsert(Piterator first, Piterator last)
+// {
 
-}
+// }
 
-template<template<typename, typename> class CONT> 
-void	PmergeMe<CONT>::mergeSort(Piterator first, Piterator last)
-{
+// template<template<typename, typename> class CONT> 
+// void	PmergeMe<CONT>::mergeSort(Piterator first, Piterator last)
+// {
 	
-}
+// }
 
 #endif
