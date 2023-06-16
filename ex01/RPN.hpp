@@ -2,9 +2,9 @@
 # define RPN_HPP
 
 # include <stack>
-# include <deque>
+# include <list>
 
-typedef std::stack<int, std::deque<int> > expressions;
+typedef std::stack<int, std::list<int> > expressions;
 
 class RPN
 {

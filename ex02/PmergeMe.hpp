@@ -1,15 +1,16 @@
 #ifndef PmergeMe_HPP
 # define PmergeMe_HPP
 
-#include <vector>
-#include <list>
+# include <vector>
+# include <deque>
 
-#include <exception>
+# include <exception>
+# include <string>
 
 template<template<typename, typename> class CONT> 
 class PmergeMe
 {
-	typedef	CONT<int>::iterator	Piterator;
+	typedef typename CONT<int, std::allocator<int> >::iterator	Piterator;
 
 	private:
 		CONT<int, std::allocator<int> >	cont_;
@@ -32,7 +33,8 @@ class PmergeMe
 		};
 
 		void	parseInput(char **argv);
-		void	PmergeIt();
+		void	pmergeIt();
+		void	printCont();
 		// void	mergeSplit(Piterator first, Piterator last);
 		// void	mergeInsert(Piterator first, Piterator last);
 		// void	mergeSort(Piterator first, Piterator last);

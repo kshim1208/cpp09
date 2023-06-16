@@ -18,9 +18,12 @@ int	main(int argc, char **argv)
 			return (1);
 
 		merger_vec.parseInput(argv);
+		merger_vec.printCont();
 		merger_list.parseInput(argv);
 		// template으로 투입-정렬 합치기? 나누기?
 		// input 각 container에 검사-투입
+		merger_vec.pmergeIt();
+		merger_vec.printCont();
 		// input을 각 containter에서 정렬
 		
 	}

@@ -3,9 +3,12 @@
 
 # include "PmergeMe.hpp"
 
+# include <algorithm>
 # include <sstream>
 # include <string>
 # include <exception>
+# include <iostream>
+# include <utility>
 
 template<template<typename, typename> class CONT> 
 PmergeMe<CONT>::PmergeMe(/* args*/){}
@@ -88,31 +91,33 @@ void	PmergeMe<CONT>::parseInput(char **argv)
 }
 
 template<template<typename, typename> class CONT> 
-void	PmergeMe<CONT>::PmergeIt()
+void	PmergeMe<CONT>::pmergeIt()
 {
-    int n = this->cont_.size();
-    int pairs = n / 2;
-    int oddpair = n % 2;
+	int									pairNum = this->cont_.size() / 2;
+	int									isOdd = this->cont_.size() % 2;
 
-    for (int i = 0; i < pairs; ++i) {
-        if (this->cont_[2 * i] > this->cont_[2 * i + 1]) {
-            std::swap(this->cont_[2 * i], this->cont_[2 * i + 1]);
-        }
-    }
+	// size가 2보다 작으면 그냥 종료
 
-    if (oddpair == 1) {
-        pairs++;
-    }
+	for (int iter = 0; iter < pairNum; iter++)
+	{
+		if (this->cont_[iter * 2] < this->cont_[iter * 2 + 1])
+		{
+			std::swap(this->cont_[iter * 2], this->cont_[iter * 2 + 1]);
+		}
+	}
 
-    while (pairs > 1) {
-        int mergedpairs = pairs / 2;
-        for (int i = 0; i < mergedpairs; ++i) {
-            if (this->cont_[4 * i + 2] > this->cont_[4 * i + 3]) {
-                std::swap(this->cont_[4 * i + 2], this->cont_[4 * i + 3]);
-            }
-        }
-        pairs = mergedpairs;
-    }
+	// pair수만큼 옮기면서 이진정렬한다.
+
+	Piterator	baseEnd;
+
+	for (int iter = 0; iter < pairNum; iter++)
+	{
+		// this->cont_[iter * 2]
+		// 이전 iter 값이랑 비교한다
+		// iterator 저장을 위한 변수 필요
+			// 자기 자신을 baseEnd로 지정하고 그 앞 노드를 정렬
+	}
+
 }
 
 // template<template<typename, typename> class CONT> 
@@ -132,5 +137,17 @@ void	PmergeMe<CONT>::PmergeIt()
 // {
 	
 // }
+
+template<template<typename, typename> class CONT> 
+void	PmergeMe<CONT>::printCont()
+{
+	size_t	contSize = this->cont_.size();
+
+	for (size_t iter = 0; iter < contSize; iter++)
+	{
+		std::cout << this->cont_[iter] << " ";
+	}
+	std::cout << std::endl;
+}
 
 #endif
