@@ -7,13 +7,17 @@
 # include <exception>
 # include <string>
 
+# define BEFORE 0
+# define AFTER 1
+
 template<template<typename, typename> class CONT> 
 class PmergeMe
 {
 	typedef typename CONT<int, std::allocator<int> >::iterator	Piterator;
 
 	private:
-		CONT<int, std::allocator<int> >	cont_;;
+		CONT<int, std::allocator<int> >	cont_;
+		
 	public:
 		PmergeMe(/* args*/);
 		~PmergeMe();
@@ -32,13 +36,10 @@ class PmergeMe
 				std::string*	nowLine_;
 		};
 
-		void	parseInput(char **argv);
-		void	pmergeIt();
-		void	printCont();
-		// void	mergeSplit(Piterator first, Piterator last);
-		// void	mergeInsert(Piterator first, Piterator last);
-		// void	mergeSort(Piterator first, Piterator last);
-
+		void		parseInput(char **argv);
+		void		pmergeIt();
+		void		printCont(int mode);
+		int			contSize() const ;
 };
 
 # include "PmergeMe.tpp"
