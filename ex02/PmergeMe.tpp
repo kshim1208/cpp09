@@ -85,6 +85,7 @@ void	PmergeMe<CONT>::parseInput(char **argv)
 		{
 			throw PmergeMe<CONT>::badInput(tmp_str);
 		}
+		// 중복 확인 추가 필요
 		this->cont_.push_back(tmp_int);
 		iter++;
 	}
@@ -93,30 +94,208 @@ void	PmergeMe<CONT>::parseInput(char **argv)
 template<template<typename, typename> class CONT> 
 void	PmergeMe<CONT>::pmergeIt()
 {
-	int									pairNum = this->cont_.size() / 2;
-	int									isOdd = this->cont_.size() % 2;
+	int			pairNum = this->cont_.size() / 2;
+	int			isOdd = this->cont_.size() % 2;
+
 
 	// size가 2보다 작으면 그냥 종료
+	if (this->cont_.size() < 2)
+		return ;
 
-	for (int iter = 0; iter < pairNum; iter++)
+	Piterator	base = this->cont_.begin();
+	Piterator	pend = base + 1;
+	Piterator	now;
+	Piterator	tmp;
+
+	// 반복문 구조상 임시 분리
+
+	if (this->cont_[0] < this->cont_[1])
+	{
+		std::swap(this->cont_[0], this->cont_[1]);
+	}
+
+	// base 구간, pend 구간 설정
+
+	for (int iter = 1; iter < pairNum; iter++)
 	{
 		if (this->cont_[iter * 2] < this->cont_[iter * 2 + 1])
 		{
 			std::swap(this->cont_[iter * 2], this->cont_[iter * 2 + 1]);
 		}
+	
+		now = base + (iter * 2);
+		tmp = pend;
+
+		for (int swap_iter = 0; swap_iter < iter; swap_iter++)
+		{
+			std::iter_swap(tmp, now);
+			tmp = tmp + 1;
+			this->printCont();
+		}
+		pend = pend + 1;
 	}
 
-	// pair수만큼 옮기면서 이진정렬한다.
+	// base 이진 정렬 및 pend 위치 동기화
+	printf("base binaray and pend sync\n");
 
-	Piterator	baseEnd;
-
-	for (int iter = 0; iter < pairNum; iter++)
+	now = base + 1;
+	for (int iter = 1; iter < pairNum; iter++)
 	{
-		// this->cont_[iter * 2]
-		// 이전 iter 값이랑 비교한다
-		// iterator 저장을 위한 변수 필요
-			// 자기 자신을 baseEnd로 지정하고 그 앞 노드를 정렬
+		int	distance;
+
+		tmp = std::upper_bound(base, now, *now);
+		if (tmp != now)
+		{
+			distance = std::distance(tmp, now);
+			printf("distance = %d\n", distance);
+			for (int swap_iter = 0; swap_iter < distance; swap_iter++)
+			{
+				std::iter_swap(tmp, now);
+				std::iter_swap(tmp + pairNum, now + pairNum);
+				tmp = tmp + 1;
+				this->printCont();
+			}
+		}
+		now = now + 1;
 	}
+
+	// pend를 base에 이진탐색하여 옮겨넣기
+	printf("pend to base\n");	
+
+	bool	end = false;
+	int		jacobsthalNumbers[] = {1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 349525, 699051,
+				1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971, 357913941, 715827883, 1431655765};
+	int		jacobIndex = 0;
+	int		maxJacobIndex = 0;
+	int		pendIter = 1;
+
+	printf("set max jacob index\n");	
+	while (jacobsthalNumbers[maxJacobIndex] <= pairNum)
+	{
+		maxJacobIndex++;
+	}
+	
+	printf("pend to base - process\n");	
+
+	while (end == false)
+	{
+		int distance;
+		int jacobsIter = 1;
+
+		// !!!! 야콥슨 수에 따른 적용 순서 어떤 식으로 구현 할 수 있을까?
+		if (pendIter != 1 && jacobsthalNumbers[jacobIndex] <= pairNum)
+		{
+			jacobIndex++;
+			if (jacobsthalNumbers[jacobIndex] > pairNum)
+			{
+				jacobsIter = pairNum - jacobsthalNumbers[jacobIndex - 1];
+				now = pend + pairNum - 1;
+			}
+			else
+			{
+				jacobsIter = jacobsthalNumbers[jacobIndex] - jacobsthalNumbers[jacobIndex - 1];
+				now = pend + jacobsthalNumbers[jacobIndex] - 1;
+			}
+		}
+
+		for (int iter = 0; iter < jacobsIter; iter++)
+		{
+			printf("pendIter - %d\n", pendIter);
+			printf("jacobsIter - %d\n", jacobsIter);
+			printf("*now - %d\n", *now);
+
+			tmp = std::upper_bound(base, now, *now);
+			if (tmp != now)
+			{
+				distance = std::distance(tmp, now);
+				printf("distance = %d\n", distance);
+				for (int swap_iter = 0; swap_iter < distance; swap_iter++)
+				{
+					std::iter_swap(tmp, now);
+					tmp = tmp + 1;
+					this->printCont();
+				}
+			}
+			if (pendIter == pairNum)
+			{
+				end = true;
+				break ;
+			}
+			pendIter++;
+		}
+	}
+
+	// 홀수인 경우 1회 탐색 추가
+
+	if (isOdd == true)
+	{
+		now = this->cont_.end() - 1;
+		int distance;
+
+		tmp = std::upper_bound(base, now, *now);
+		if (tmp != now)
+		{
+			distance = std::distance(tmp, now);
+			printf("distance = %d\n", distance);
+			for (int swap_iter = 0; swap_iter < distance; swap_iter++)
+			{
+				std::iter_swap(tmp, now);
+				tmp = tmp + 1;
+				this->printCont();
+			}
+		}
+	}
+
+
+
+	// 추가 컨테이너를 만드는 방식 - 일단 보류. 만들고 싶지 않음.
+
+	// CONT<int, std::allocator<int> >	base;
+	// CONT<int, std::allocator<int> >	pend;
+
+	// for (int iter = 0; iter < pairNum; iter++)
+	// {
+	// 	if (this->cont_[iter * 2] < this->cont_[iter * 2 + 1])
+	// 	{
+	// 		base.push_back(this->cont_[iter * 2 + 1]);
+	// 		pend.push_back(this->cont_[iter * 2]);
+	// 	}
+	// 	else
+	// 	{
+	// 		base.push_back(this->cont_[iter * 2]);
+	// 		pend.push_back(this->cont_[iter * 2 + 1]);
+	// 	}
+	// }
+
+	// 현재 container에 그대로 합쳐놓아서는 이진정렬이 제대로 안될 것이므로 반드시 자료 구조 분리가 필요할 것이라 판단했다.
+
+	// // pair수만큼 옮기면서 이진정렬한다.
+	// Piterator	baseBegin;
+	// // baseNow baseEnd 내부 구조따라 통합 가능
+	// Piterator	baseEnd = this->cont_.begin() + 2;
+	// Piterator	baseNow = this->cont_.begin();
+	// Piterator	baseTmp;
+
+	// for (int iter = 1; iter < pairNum; iter++)
+	// {
+	// 	baseBegin = this->cont_.begin();
+	// 	baseTmp = std::upper_bound(baseBegin, baseNow, *baseNow);
+	// 	printf("%d\n", *baseTmp);
+	// 	if (baseTmp != baseNow)
+	// 	{
+	// 		while (baseTmp != baseEnd)
+	// 		{
+	// 			printf("....\n");
+	// 			baseNow = baseEnd - 2;
+	// 			std::iter_swap(baseTmp + 1, baseNow + 1);
+	// 			std::iter_swap(baseTmp, baseNow);
+	// 			baseTmp = baseNow + 2;
+	// 		}
+	// 	}
+	// 	baseEnd = baseEnd + 2;
+	// 	baseNow = baseEnd - 2;
+	// 	this->printCont();
+	// }
 
 }
 

@@ -13,7 +13,7 @@ class PmergeMe
 	typedef typename CONT<int, std::allocator<int> >::iterator	Piterator;
 
 	private:
-		CONT<int, std::allocator<int> >	cont_;
+		CONT<int, std::allocator<int> >	cont_;;
 	public:
 		PmergeMe(/* args*/);
 		~PmergeMe();
