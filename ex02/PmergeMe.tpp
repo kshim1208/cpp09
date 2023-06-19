@@ -148,35 +148,36 @@ void	PmergeMe<CONT>::pmergeIt()
 
 	// pend를 base에 이진탐색하여 옮겨넣기
 	bool	end = false;
-	int		jacobsthalNumbers[] = {1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 349525, 699051,
+	int		jacobsthalNumbers[] = {0 ,1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 349525, 699051,
 				1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971, 357913941, 715827883, 1431655765};
 	int		jacobIndex = 0;
 	int		maxJacobIndex = 0;
 	int		pendIter = 1;
+	CONT<int, std::allocator<int> >	pairDist(this->cont_.size());
 
+	// pairdist의 값을 pairNum으로 설정
+	
 	while (jacobsthalNumbers[maxJacobIndex] <= pairNum)
 	{
 		maxJacobIndex++;
 	}
 
+	now = pend;
 	while (end == false)
 	{
 		int distance;
 		int jacobsIter = 1;
 
-		if (pendIter != 1 && jacobsthalNumbers[jacobIndex] <= pairNum)
+		jacobIndex++;
+		if (jacobsthalNumbers[jacobIndex] > pairNum)
 		{
-			jacobIndex++;
-			if (jacobsthalNumbers[jacobIndex] > pairNum)
-			{
-				jacobsIter = pairNum - jacobsthalNumbers[jacobIndex - 1];
-				now = pend + pairNum - 1;
-			}
-			else
-			{
-				jacobsIter = jacobsthalNumbers[jacobIndex] - jacobsthalNumbers[jacobIndex - 1];
-				now = pend + jacobsthalNumbers[jacobIndex] - 1;
-			}
+			jacobsIter = jacobsthalNumbers[jacobIndex] - jacobsthalNumbers[jacobIndex - 1];
+			now = now + jacobsIter - 1;
+		}
+		else
+		{
+			jacobsIter = pairNum - jacobsthalNumbers[jacobIndex - 1];
+			now = now + jacobsIter - 1;
 		}
 
 		for (int iter = 0; iter < jacobsIter; iter++)
