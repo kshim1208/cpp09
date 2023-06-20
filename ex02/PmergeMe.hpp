@@ -9,6 +9,7 @@
 
 # define BEFORE 0
 # define AFTER 1
+# define ONLY 2
 
 template<template<typename, typename> class CONT> 
 class PmergeMe

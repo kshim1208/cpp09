@@ -2,6 +2,7 @@
 # define PMERGEME_TPP
 
 # include "PmergeMe.hpp"
+# include "PmergeMe.h"
 
 # include <algorithm>
 # include <sstream>
@@ -151,47 +152,77 @@ void	PmergeMe<CONT>::pmergeIt()
 	int		jacobsthalNumbers[] = {0 ,1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461, 10923, 21845, 43691, 87381, 174763, 349525, 699051,
 				1398101, 2796203, 5592405, 11184811, 22369621, 44739243, 89478485, 178956971, 357913941, 715827883, 1431655765};
 	int		jacobIndex = 0;
-	int		maxJacobIndex = 0;
+	int		maxJacobIndex = 31;
 	int		pendIter = 1;
-	CONT<int, std::allocator<int> >	pairDist(this->cont_.size());
+	int		pairDistMid = pairNum;
+	CONT<int, std::allocator<int> >	pairDist;
+	Piterator	pairNow;
+	Piterator	pairTmpBase;
+	Piterator	pairDistBegin;
+	Piterator	pairDistEnd;
 
 	// pairdist의 값을 pairNum으로 설정
-	
+	pairDist.push_back(0);
+	for (int iter = 0; iter < pairNum; iter++)
+	{
+		pairDist.push_back(pairNum);
+	}
+
 	while (jacobsthalNumbers[maxJacobIndex] <= pairNum)
 	{
 		maxJacobIndex++;
 	}
 
-	now = pend;
+	now = pend - 1;
+	pairDistBegin = pairDist.begin();
+	pairDistEnd = pairDist.end();
 	while (end == false)
 	{
-		int distance;
-		int jacobsIter = 1;
+		int distance = 0;
+		int jacobsIter = 0;
 
 		jacobIndex++;
-		if (jacobsthalNumbers[jacobIndex] > pairNum)
+		if (jacobIndex > maxJacobIndex || jacobsthalNumbers[jacobIndex] > pairNum)
 		{
-			jacobsIter = jacobsthalNumbers[jacobIndex] - jacobsthalNumbers[jacobIndex - 1];
-			now = now + jacobsIter - 1;
+			jacobsIter = pairNum - jacobsthalNumbers[jacobIndex - 1];
+			pairTmpBase = pairDistBegin + jacobsthalNumbers[jacobIndex - 1];
+			pairNow = pairDistBegin + pairNum;
+
 		}
 		else
 		{
-			jacobsIter = pairNum - jacobsthalNumbers[jacobIndex - 1];
-			now = now + jacobsIter - 1;
+			jacobsIter = jacobsthalNumbers[jacobIndex] - jacobsthalNumbers[jacobIndex - 1];
+			pairTmpBase = pairDistBegin + jacobsthalNumbers[jacobIndex - 1];
+			pairNow = pairDistBegin + jacobsthalNumbers[jacobIndex];
 		}
+		now = now + jacobsIter;
 
 		for (int iter = 0; iter < jacobsIter; iter++)
 		{
-			tmp = std::upper_bound(base, now, *now);
-			if (tmp != now)
+			tmp = std::upper_bound(base, now - *pairNow + 1, *now);
+			distance = std::distance(tmp, now);
+
+			for (int swap_iter = 0; swap_iter < distance; swap_iter++)
 			{
-				distance = std::distance(tmp, now);
-				for (int swap_iter = 0; swap_iter < distance; swap_iter++)
-				{
-					std::iter_swap(tmp, now);
-					tmp = tmp + 1;
-				}
+				std::iter_swap(tmp, now);
+				tmp = tmp + 1;
 			}
+			// pairDist 요소들 distance에 맞게 재설정 (distance 지점 기준 증감)
+			if (distance > pairDistMid + jacobsIter - iter)
+			{
+				std::for_each(pairTmpBase, pairDistEnd, elements_decrement);
+			}
+			else if (distance <= pairDistMid + jacobsIter - iter)
+			{
+				std::for_each(pairTmpBase, pairNow, elements_increment);
+				std::for_each(pairNow, pairDistEnd, elements_decrement);
+			}
+			
+			// pairDistMid 처리
+			pairDistMid--;
+			// pairNow - 1
+			pairNow = pairNow - 1;
+
 			if (pendIter == pairNum)
 			{
 				end = true;
