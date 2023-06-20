@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 		return (1);
-	data_strm.open(argv[1]/*, 읽기 위한 옵션 추가 */);
+	data_strm.open(argv[1]);
 	if (data_strm.is_open() == false)
 	{
 		std::cerr << "fail to open file." << "\n";

@@ -88,7 +88,6 @@ void	BitcoinExchange::openMarket(void)
 			if (data_strm.fail() == true)
 			{
 				break ;
-				// fail??? 어떤 경우?? 어떤 처리??
 			}
 			std::getline(data_strm, tmp_str);
 			pos = tmp_str.find(',');
@@ -149,8 +148,6 @@ void	BitcoinExchange::calcInput(std::fstream& input)
 				break ;
 			}
 			std::getline(input, tmp_str);
-			// if (input.eof() == true)
-			// 	break ;
 			pos = tmp_str.find('|');
 			if (pos == std::string::npos)
 			{
