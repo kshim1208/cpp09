@@ -23,9 +23,10 @@ int	main(int argc, char **argv)
 	{
 		if (argc < 2)
 			return (1);
-		gettimeofday(&start, 0);
+
 		merger_vec.parseInput(argv);
 		merger_vec.printCont(BEFORE);
+		gettimeofday(&start, 0);
 		merger_vec.pmergeIt();
 		gettimeofday(&end, 0);
 
@@ -35,11 +36,11 @@ int	main(int argc, char **argv)
 
 		merger_vec.printCont(AFTER);
 
-		std::cout << "Time to process a range of " << merger_vec.contSize() << " elements with std::vector : " << passed << "us" << std::endl;
+		std::cout << "Time to process a range of " << merger_vec.contSize() << " elements with std::vector : " << passed << " us" << std::endl;
 
-		gettimeofday(&start, 0);
+
 		merger_deque.parseInput(argv);
-		merger_deque.printCont(BEFORE);
+		gettimeofday(&start, 0);
 		merger_deque.pmergeIt();
 		gettimeofday(&end, 0);
 
@@ -47,9 +48,7 @@ int	main(int argc, char **argv)
 		microsecond = end.tv_usec - start.tv_usec;
 		passed = second * 1000000.0 + microsecond;
 
-		merger_deque.printCont(AFTER);
-
-		std::cout << "Time to process a range of " << merger_deque.contSize() << " elements with std::deque : " << passed << "us" << std::endl;
+		std::cout << "Time to process a range of " << merger_deque.contSize() << " elements with std::deque : " << passed << " us" << std::endl;
 	}
 	catch(const std::exception& e)
 	{
